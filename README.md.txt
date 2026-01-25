@@ -1,0 +1,28 @@
+# Environment variables
+.env
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Flutter (future frontend)
+build/
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+
+# Python / ML
+__pycache__/
+*.pyc
+venv/
+.env.*
+
+# IDE
+.vscode/
+.idea/
