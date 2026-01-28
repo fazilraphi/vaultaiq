@@ -5,54 +5,56 @@ const cors = require("cors");
 
 const app = express();
 
-/* -------------------- CORS (FIXED FOR BROWSERS) -------------------- */
+// ✅ CORS must come BEFORE routes
 app.use(
   cors({
-    origin: "*", // allow all frontends for now (safe for dev)
+    origin: [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "http://127.0.0.1:3000",
+      "http://127.0.0.1:3001",
+    ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   }),
 );
 
-// Important: respond to preflight explicitly
 app.options("*", cors());
-
-/* -------------------- MIDDLEWARE -------------------- */
 app.use(express.json());
 
-/* -------------------- MODELS -------------------- */
+// Models
 require("./models/User");
 
-/* -------------------- ROUTES -------------------- */
+// Routes
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const expenseRoutes = require("./routes/expenseRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
 const budgetRoutes = require("./routes/budgetRoutes");
 
+// Routes registration
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/expenses", expenseRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use("/api/budgets", budgetRoutes);
 
-/* -------------------- TEST ROUTE -------------------- */
+// Test route
 app.get("/", (req, res) => {
   res.send("VaultaIQ Backend is running");
 });
 
-/* -------------------- ERROR HANDLER -------------------- */
+// Error handler
 const errorHandler = require("./middleware/errorHandler");
 app.use(errorHandler);
 
-/* -------------------- DATABASE -------------------- */
+// MongoDB
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected successfully"))
-  .catch((err) => console.error("MongoDB error:", err.message));
+  .catch((err) => console.error("Mongo error:", err.message));
 
-/* -------------------- SERVER -------------------- */
+// Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
