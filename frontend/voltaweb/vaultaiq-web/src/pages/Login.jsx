@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 
 export default function Login() {
@@ -30,16 +30,15 @@ export default function Login() {
         </h2>
 
         {error && (
-          <p className="mb-4 text-red-400 text-sm text-center">
-            {error}
-          </p>
+          <p className="mb-4 text-red-400 text-sm text-center">{error}</p>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="email"
             placeholder="Email"
-            className="w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-2 rounded bg-gray-700 text-white
+                       focus:outline-none focus:ring-2 focus:ring-indigo-500"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -48,7 +47,8 @@ export default function Login() {
           <input
             type="password"
             placeholder="Password"
-            className="w-full px-4 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full px-4 py-2 rounded bg-gray-700 text-white
+                       focus:outline-none focus:ring-2 focus:ring-indigo-500"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -56,11 +56,23 @@ export default function Login() {
 
           <button
             type="submit"
-            className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded transition"
+            className="w-full py-2 bg-indigo-600 hover:bg-indigo-700
+                       text-white font-semibold rounded transition"
           >
             Login
           </button>
         </form>
+
+        {/* Register Redirect */}
+        <p className="mt-6 text-sm text-center text-gray-400">
+          Don&apos;t have an account?{" "}
+          <Link
+            to="/register"
+            className="text-indigo-400 hover:text-indigo-300 font-medium"
+          >
+            Register
+          </Link>
+        </p>
       </div>
     </div>
   );
