@@ -13,7 +13,7 @@ export default function ExpenseForm({ onAdd }) {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Prevent negative values at input level
+    // Prevent negative values
     if (name === "amount" && Number(value) < 0) return;
 
     setForm({ ...form, [name]: value });
@@ -44,61 +44,99 @@ export default function ExpenseForm({ onAdd }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-slate-800 p-4 rounded-lg mb-6 grid gap-3 md:grid-cols-5"
+      className="
+        bg-slate-800 p-6 rounded-xl mb-8
+        w-full max-w-xl
+        mx-auto
+      "
     >
-      <input
-        name="amount"
-        type="number"
-        min="0"
-        step="0.01"
-        placeholder="Amount"
-        value={form.amount}
-        onChange={handleChange}
-        required
-        className="input"
-      />
+      <h3 className="text-sm font-semibold text-slate-300 mb-6">
+        Add New Expense
+      </h3>
 
-      <select
-        name="category"
-        value={form.category}
-        onChange={handleChange}
-        className="input"
-      >
-        {EXPENSE_CATEGORIES.map((cat) => (
-          <option key={cat} value={cat}>
-            {cat}
-          </option>
-        ))}
-      </select>
+      <div className="flex flex-col gap-4">
+        {/* Amount */}
+        <div>
+          <label className="block text-xs text-slate-400 mb-1">Amount</label>
+          <input
+            name="amount"
+            type="number"
+            min="0"
+            step="0.01"
+            placeholder="Enter amount"
+            value={form.amount}
+            onChange={handleChange}
+            required
+            className="input w-full"
+          />
+        </div>
 
-      <input
-        name="merchant"
-        placeholder="Merchant"
-        value={form.merchant}
-        onChange={handleChange}
-        className="input"
-      />
+        {/* Category */}
+        <div>
+          <label className="block text-xs text-slate-400 mb-1">Category</label>
+          <select
+            name="category"
+            value={form.category}
+            onChange={handleChange}
+            className="input w-full"
+          >
+            {EXPENSE_CATEGORIES.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <input
-        name="note"
-        placeholder="Note"
-        value={form.note}
-        onChange={handleChange}
-        className="input"
-      />
+        {/* Merchant */}
+        <div>
+          <label className="block text-xs text-slate-400 mb-1">Merchant</label>
+          <input
+            name="merchant"
+            placeholder="e.g. Swiggy, Amazon"
+            value={form.merchant}
+            onChange={handleChange}
+            className="input w-full"
+          />
+        </div>
 
-      <input
-        name="date"
-        type="date"
-        value={form.date}
-        onChange={handleChange}
-        required
-        className="input"
-      />
+        {/* Note */}
+        <div>
+          <label className="block text-xs text-slate-400 mb-1">Note</label>
+          <input
+            name="note"
+            placeholder="Optional note"
+            value={form.note}
+            onChange={handleChange}
+            className="input w-full"
+          />
+        </div>
 
-      <button className="md:col-span-5 bg-indigo-600 hover:bg-indigo-700 py-2 rounded-md font-semibold">
-        Add Expense
-      </button>
+        {/* Date */}
+        <div>
+          <label className="block text-xs text-slate-400 mb-1">Date</label>
+          <input
+            name="date"
+            type="date"
+            value={form.date}
+            onChange={handleChange}
+            required
+            className="input w-full"
+          />
+        </div>
+
+        {/* Submit */}
+        <button
+          type="submit"
+          className="
+            mt-2 w-full py-2 rounded-md
+            bg-indigo-600 hover:bg-indigo-700
+            font-semibold transition
+          "
+        >
+          Add Expense
+        </button>
+      </div>
     </form>
   );
 }

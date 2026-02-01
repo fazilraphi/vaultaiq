@@ -27,19 +27,20 @@ export default function Analytics() {
     fetchAnalytics();
   }, [month, year]);
 
-  const fetchAnalytics = async () => {
-    const [s, t, m, i] = await Promise.all([
-      getMonthlySummary(year, month),
-      getSpendingTrends(),
-      getTopMerchants(),
-      getInsights(),
-    ]);
+ const fetchAnalytics = async () => {
+  const [s, t, m, i] = await Promise.all([
+    getMonthlySummary(year, month),
+    getSpendingTrends(year, month),
+    getTopMerchants(year, month),
+    getInsights(year, month),
+  ]);
 
-    setSummary(s.data);
-    setTrends(t.data);
-    setMerchants(m.data);
-    setInsights(i.data.insights);
-  };
+  setSummary(s.data);
+  setTrends(t.data);
+  setMerchants(m.data);
+  setInsights(i.data.insights);
+};
+
 
   return (
     <Layout>
@@ -98,10 +99,7 @@ export default function Analytics() {
         <h3 className="font-semibold mb-4">Top Merchants</h3>
         <ul className="space-y-2 text-sm">
           {merchants.map((m) => (
-            <li
-              key={m._id}
-              className="flex justify-between text-slate-300"
-            >
+            <li key={m._id} className="flex justify-between text-slate-300">
               <span>{m._id}</span>
               <span className="font-medium">₹{m.total}</span>
             </li>
@@ -109,14 +107,21 @@ export default function Analytics() {
         </ul>
       </div>
 
-      {/* INSIGHTS */}
-      <div className="bg-slate-800 p-6 rounded-lg">
-        <h3 className="font-semibold mb-4">Insights</h3>
-        <ul className="list-disc list-inside space-y-1 text-sm text-slate-300">
-          {insights.map((i, idx) => (
-            <li key={idx}>{i}</li>
-          ))}
-        </ul>
+      {/* Insights Preview */}
+      <div className="bg-slate-800 p-4 rounded-lg">
+        <h3 className="font-semibold mb-2">Insights</h3>
+
+        {insights.length === 0 ? (
+          <p className="text-sm text-slate-400">
+            No insights yet. Add some expenses to unlock insights.
+          </p>
+        ) : (
+          <ul className="list-disc list-inside text-sm space-y-1">
+            {insights.slice(0, 3).map((i, idx) => (
+              <li key={idx}>{i}</li>
+            ))}
+          </ul>
+        )}
       </div>
     </Layout>
   );

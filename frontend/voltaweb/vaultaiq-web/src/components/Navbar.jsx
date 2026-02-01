@@ -2,6 +2,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { useState } from "react";
 import ThemeToggle from "./ThemeToggle";
+import logo from "../assets/logo-icon.png";
 
 export default function Navbar() {
   const { logout } = useAuth();
@@ -15,17 +16,27 @@ export default function Navbar() {
   };
 
   const linkClass = ({ isActive }) =>
-    `block px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+    `px-3 py-2 rounded-md text-sm font-medium transition-all ${
       isActive
-        ? "bg-indigo-600 text-white"
-        : "text-slate-300 hover:bg-slate-800 dark:hover:bg-slate-700"
+        ? "bg-indigo-500/20 text-indigo-400"
+        : "text-slate-300 hover:text-white hover:bg-white/5"
     }`;
 
   return (
-    <nav className="bg-slate-800 dark:bg-slate-900 border-b border-slate-700 dark:border-slate-800">
+    <nav className="sticky top-0 z-50 backdrop-blur bg-[#0B1220]/80 border-b border-white/5">
       <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
         {/* Brand */}
-        <h1 className="font-bold text-indigo-400 text-lg">VaultaIQ</h1>
+        <div className="flex items-center gap-2">
+          <img
+            src={logo}
+            alt="VaultaIQ"
+            className="w-8 h-8 opacity-85 contrast-90"
+          />
+
+          <span className="font-semibold text-lg text-white tracking-tight">
+            VaultaIQ
+          </span>
+        </div>
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center gap-2">
@@ -42,12 +53,14 @@ export default function Navbar() {
             Analytics
           </NavLink>
 
+          <div className="mx-2 h-5 w-px bg-white/10" />
+
           <ThemeToggle />
 
           <button
             onClick={handleLogout}
             className="ml-2 px-3 py-2 rounded-md text-sm font-medium
-              bg-red-600 hover:bg-red-700 transition-colors"
+                       bg-red-500/10 text-red-400 hover:bg-red-500/20 transition"
           >
             Logout
           </button>
@@ -56,7 +69,7 @@ export default function Navbar() {
         {/* Mobile Hamburger */}
         <button
           onClick={() => setOpen(!open)}
-          className="md:hidden text-slate-200 focus:outline-none"
+          className="md:hidden text-slate-200 text-xl"
           aria-label="Toggle menu"
         >
           ☰
@@ -65,7 +78,7 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {open && (
-        <div className="md:hidden px-4 pb-4 space-y-2 bg-slate-800 dark:bg-slate-900">
+        <div className="md:hidden px-4 pb-4 pt-2 space-y-2 bg-[#0B1220]/95 backdrop-blur border-t border-white/5">
           <NavLink to="/" onClick={() => setOpen(false)} className={linkClass}>
             Dashboard
           </NavLink>
@@ -91,12 +104,12 @@ export default function Navbar() {
             Analytics
           </NavLink>
 
-          <div className="pt-2 flex items-center justify-between">
+          <div className="pt-3 flex items-center justify-between">
             <ThemeToggle />
             <button
               onClick={handleLogout}
               className="px-3 py-2 rounded-md text-sm font-medium
-                bg-red-600 hover:bg-red-700"
+                         bg-red-500/10 text-red-400 hover:bg-red-500/20"
             >
               Logout
             </button>
