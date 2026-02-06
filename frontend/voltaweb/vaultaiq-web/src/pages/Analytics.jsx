@@ -38,9 +38,16 @@ export default function Analytics() {
     ]);
 
     setSummary(s.data);
-    setTrends(t.data);
     setMerchants(m.data);
     setInsights(i.data.insights || []);
+
+    // 🔥 NORMALIZE TREND DATA (CRITICAL)
+    const normalized = (t.data || []).map((item) => ({
+      month: item._id?.month,
+      total: item.total,
+    }));
+
+    setTrends(normalized);
   };
 
   return (
@@ -52,16 +59,13 @@ export default function Analytics() {
           <p className="text-slate-400">Deep dive into your financial data</p>
         </div>
 
-        {/* MONTH / YEAR SELECT */}
         <div className="flex gap-3 bg-slate-900/50 p-2 rounded-xl border border-white/5">
           <div className="relative">
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 pointer-events-none">
-              <Calendar className="w-4 h-4" />
-            </div>
+            <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
             <select
               value={month}
               onChange={(e) => setMonth(Number(e.target.value))}
-              className="bg-slate-800 text-white rounded-lg pl-9 pr-8 py-2 text-sm focus:ring-2 focus:ring-indigo-500/50"
+              className="bg-slate-800 text-white rounded-lg pl-9 pr-6 py-2 text-sm"
             >
               {MONTHS.map((m) => (
                 <option key={m.value} value={m.value}>
@@ -75,7 +79,7 @@ export default function Analytics() {
             type="number"
             value={year}
             onChange={(e) => setYear(Number(e.target.value))}
-            className="bg-slate-800 text-white rounded-lg px-3 py-2 text-sm w-20 text-center focus:ring-2 focus:ring-indigo-500/50"
+            className="bg-slate-800 text-white rounded-lg px-3 py-2 text-sm w-20 text-center"
           />
         </div>
       </div>
@@ -84,33 +88,28 @@ export default function Analytics() {
       {summary && (
         <div className="grid md:grid-cols-2 gap-6 mb-8">
           <Card className="relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-10">
-              <PieChart className="w-32 h-32 text-indigo-500" />
-            </div>
-
-            <h3 className="text-sm text-slate-400 mb-1">
-              Total Spent This Month
-            </h3>
+            <PieChart className="absolute right-4 top-4 w-24 h-24 opacity-10 text-indigo-500" />
+            <p className="text-sm text-slate-400">Total Spent This Month</p>
             <p className="text-4xl font-bold text-white">
               ₹{summary.totalSpent.toLocaleString()}
             </p>
           </Card>
 
           <Card>
-            <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-              <ArrowUpRight className="w-5 h-5 text-emerald-400" />
+            <h3 className="flex items-center gap-2 font-semibold mb-3">
+              <ArrowUpRight className="text-emerald-400" />
               Key Insights
             </h3>
 
             {insights.length === 0 ? (
-              <p className="text-sm text-slate-500 italic">
-                No insights available for this period.
+              <p className="text-slate-500 italic text-sm">
+                No insights available.
               </p>
             ) : (
               insights.slice(0, 3).map((i, idx) => (
                 <div
                   key={idx}
-                  className="p-3 mb-2 rounded-lg bg-slate-800/30 border border-white/5"
+                  className="bg-slate-800/30 border border-white/5 rounded-lg p-3 mb-2"
                 >
                   <p className="text-sm text-slate-300">{i}</p>
                 </div>
@@ -124,18 +123,14 @@ export default function Analytics() {
       {summary && (
         <div className="grid lg:grid-cols-2 gap-6 mb-8">
           <Card>
-            <h3 className="text-lg font-bold text-white mb-4">
-              Spending Breakdown
-            </h3>
+            <h3 className="font-bold mb-4">Spending Breakdown</h3>
             <div className="h-[300px]">
               <CategoryDonutChart data={summary.breakdown} />
             </div>
           </Card>
 
           <Card>
-            <h3 className="text-lg font-bold text-white mb-4">
-              Category Analysis
-            </h3>
+            <h3 className="font-bold mb-4">Category Analysis</h3>
             <div className="h-[300px]">
               <CategoryBarChart data={summary.breakdown} />
             </div>
@@ -143,20 +138,20 @@ export default function Analytics() {
         </div>
       )}
 
-      {/* LINE CHART */}
+      {/* 🔥 LINE CHART — ONLY RENDERS WHEN DATA EXISTS */}
       {trends.length > 0 && (
         <Card className="mb-8">
-          <h3 className="text-lg font-bold text-white mb-4">Spending Trends</h3>
-          <div className="h-[300px]">
+          <h3 className="font-bold mb-4">Spending Trends</h3>
+          <div className="relative w-full h-[320px] min-h-[300px]">
             <SpendingLineChart data={trends} />
           </div>
         </Card>
       )}
 
-      {/* TOP MERCHANTS */}
+      {/* MERCHANTS */}
       <Card>
-        <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
-          <Store className="w-5 h-5 text-purple-400" />
+        <h3 className="flex items-center gap-2 font-bold mb-4">
+          <Store className="text-purple-400" />
           Top Merchants
         </h3>
 

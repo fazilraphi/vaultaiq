@@ -7,23 +7,29 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+/**
+ * SAFE tooltip — never renders objects
+ */
 const CustomTooltip = ({ active, payload, label }) => {
   if (!active || !payload || !payload.length) return null;
+
+  const value = payload[0]?.value;
+
+  if (typeof value !== "number") return null;
 
   return (
     <div className="bg-slate-900 px-3 py-2 rounded shadow text-sm">
       <p className="text-slate-400">{label}</p>
-      <p className="font-semibold text-purple-400">₹{payload[0].value}</p>
+      <p className="font-semibold text-purple-400">₹{value}</p>
     </div>
   );
 };
 
-export default function SpendingLineChart({ data = [] }) {
-  // Guard against empty / undefined data
-  if (!data.length) {
+export default function SpendingLineChart({ data }) {
+  if (!Array.isArray(data) || data.length === 0) {
     return (
       <div className="h-full flex items-center justify-center text-slate-500 text-sm">
-        No trend data available
+        No spending trend data
       </div>
     );
   }
@@ -58,7 +64,7 @@ export default function SpendingLineChart({ data = [] }) {
           dataKey="total"
           stroke="url(#lineGradient)"
           strokeWidth={3}
-          dot={{ r: 4, strokeWidth: 2, fill: "#0F172A" }}
+          dot={{ r: 4, strokeWidth: 2, fill: "#020617" }}
           activeDot={{ r: 6 }}
           animationDuration={700}
         />
