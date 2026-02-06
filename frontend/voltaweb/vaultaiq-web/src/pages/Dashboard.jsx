@@ -11,46 +11,67 @@ export default function Dashboard() {
   const [summary, setSummary] = useState(null);
   const [budgets, setBudgets] = useState([]);
   const [insights, setInsights] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     loadDashboard();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadDashboard = async () => {
-    const [s, b, i] = await getDashboardData(year, month);
-    setSummary(s.data);
-    setBudgets(b.data);
-    setInsights(i.data.insights);
+    try {
+      setLoading(true);
+
+      const [summaryRes, budgetsRes, insightsRes] = await getDashboardData(
+        year,
+        month,
+      );
+
+      setSummary(summaryRes.data);
+      setBudgets(budgetsRes.data);
+      setInsights(insightsRes.data.insights || []);
+    } catch (err) {
+      console.error("Dashboard load failed:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const totalBudget = budgets.reduce(
-    (sum, b) => sum + b.limit,
-    0
-  );
+  // ✅ Correct derived values
+  const totalSpent = summary?.totalSpent ?? 0;
+
+  const totalBudget = budgets.reduce((sum, b) => sum + b.limit, 0);
+
+  const totalRemaining = budgets.reduce((sum, b) => sum + b.remaining, 0);
 
   const overspent = budgets.filter((b) => b.exceeded);
+
+  if (loading) {
+    return (
+      <Layout>
+        <p className="text-slate-400">Loading dashboard…</p>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
       <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
 
-      {/* Stats */}
+      {/* STATS */}
       <div className="grid gap-4 md:grid-cols-3 mb-6">
-        <StatCard
-          title="Spent This Month"
-          value={`₹${summary?.totalSpent ?? 0}`}
-        />
+        <StatCard title="Spent This Month" value={`₹${totalSpent}`} />
 
         <StatCard
           title="Total Budget"
           value={`₹${totalBudget}`}
-          subtitle={`Remaining ₹${totalBudget - (summary?.totalSpent ?? 0)}`}
+          subtitle={`Remaining ₹${totalRemaining}`}
         />
 
         <StatCard title="Overspent Categories" value={overspent.length} />
       </div>
 
-      {/* Overspent Alerts */}
+      {/* OVESPENDING ALERTS */}
       {overspent.length > 0 && (
         <div className="bg-red-900/30 border border-red-500 p-4 rounded-lg mb-6">
           <h3 className="font-semibold text-red-400 mb-2">
@@ -66,29 +87,29 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Quick Actions */}
+      {/* QUICK ACTIONS */}
       <div className="grid gap-4 md:grid-cols-3 mb-6">
         <a
           href="/expenses"
-          className="bg-slate-800 p-4 rounded-lg hover:bg-slate-700"
+          className="bg-slate-800 p-4 rounded-lg hover:bg-slate-700 transition"
         >
           ➕ Add Expense
         </a>
         <a
           href="/budgets"
-          className="bg-slate-800 p-4 rounded-lg hover:bg-slate-700"
+          className="bg-slate-800 p-4 rounded-lg hover:bg-slate-700 transition"
         >
           🎯 Manage Budgets
         </a>
         <a
           href="/analytics"
-          className="bg-slate-800 p-4 rounded-lg hover:bg-slate-700"
+          className="bg-slate-800 p-4 rounded-lg hover:bg-slate-700 transition"
         >
           📊 View Analytics
         </a>
       </div>
 
-      {/* Insights Preview */}
+      {/* INSIGHTS */}
       <div className="bg-slate-800 p-4 rounded-lg">
         <h3 className="font-semibold mb-2">Insights</h3>
 
