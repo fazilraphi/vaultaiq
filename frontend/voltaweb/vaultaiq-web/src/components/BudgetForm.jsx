@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { EXPENSE_CATEGORIES } from "../constants/expenseCategories";
+import { Input } from "./ui/Input";
+import { Button } from "./ui/Button";
+import { Target, IndianRupee, Tag } from "lucide-react";
 
-export default function BudgetForm({ month, year, onSave }) {
+export default function BudgetForm({ month, year, onSave, onCancel }) {
   const [category, setCategory] = useState(EXPENSE_CATEGORIES[0]);
   const [limit, setLimit] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (Number(limit) <= 0) {
       alert("Budget must be greater than 0");
       return;
@@ -19,31 +21,21 @@ export default function BudgetForm({ month, year, onSave }) {
       month,
       year,
     });
-
     setLimit("");
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="
-        bg-slate-800 p-6 rounded-xl mb-8
-        w-full max-w-xl
-        mx-auto
-      "
-    >
-      <h3 className="text-sm font-semibold text-slate-300 mb-6">
-        Set Monthly Budget
-      </h3>
-
-      <div className="flex flex-col gap-4">
-        {/* Category */}
-        <div>
-          <label className="block text-xs text-slate-400 mb-1">Category</label>
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="space-y-2">
+        <label className="text-xs font-medium text-slate-400 uppercase tracking-wider ml-1">Category</label>
+        <div className="relative">
+          <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+            <Tag className="w-5 h-5" />
+          </div>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="input w-full"
+            className="w-full bg-slate-950/50 text-white border border-slate-700/50 rounded-xl pl-11 pr-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all hover:bg-slate-900/80"
           >
             {EXPENSE_CATEGORIES.map((cat) => (
               <option key={cat} value={cat}>
@@ -52,34 +44,28 @@ export default function BudgetForm({ month, year, onSave }) {
             ))}
           </select>
         </div>
+      </div>
 
-        {/* Monthly Limit */}
-        <div>
-          <label className="block text-xs text-slate-400 mb-1">
-            Monthly Limit
-          </label>
-          <input
-            type="number"
-            min="1"
-            placeholder="Enter amount"
-            value={limit}
-            onChange={(e) => setLimit(e.target.value)}
-            required
-            className="input w-full"
-          />
-        </div>
+      <Input
+        label="Monthly Limit"
+        type="number"
+        min="1"
+        placeholder="0.00"
+        value={limit}
+        onChange={(e) => setLimit(e.target.value)}
+        required
+        icon={IndianRupee}
+      />
 
-        {/* Submit */}
-        <button
-          type="submit"
-          className="
-            mt-2 w-full py-2 rounded-md
-            bg-indigo-600 hover:bg-indigo-700
-            font-semibold transition
-          "
-        >
+      <div className="flex gap-3 pt-2">
+        {onCancel && (
+          <Button variant="secondary" onClick={onCancel} className="flex-1">
+            Cancel
+          </Button>
+        )}
+        <Button type="submit" variant="primary" className="flex-1" icon={Target}>
           Set Budget
-        </button>
+        </Button>
       </div>
     </form>
   );

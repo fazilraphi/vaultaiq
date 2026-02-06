@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { registerUser } from "../api/auth.api";
 import AuthLayout from "../layout/AuthLayout";
+import { Input } from "../components/ui/Input";
+import { Button } from "../components/ui/Button";
+import { User, Mail, Lock, ArrowRight } from "lucide-react";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -35,57 +38,59 @@ export default function Register() {
 
   return (
     <AuthLayout
-      title="Create your VaultaIQ account"
-      subtitle="Join and take control of your finances"
+      title="Create Account"
+      subtitle="Start your journey to financial freedom"
     >
       {error && (
-        <p className="mb-4 text-sm text-red-400 text-center">{error}</p>
+        <div className="mb-6 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-sm text-red-400 text-center">
+          {error}
+        </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4 mt-6">
-        <input
-          type="text"
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <Input
           name="name"
-          placeholder="Full name"
+          placeholder="Full Name"
           value={form.name}
           onChange={handleChange}
           required
-          className="auth-input"
+          icon={User}
         />
 
-        <input
+        <Input
           type="email"
           name="email"
-          placeholder="Email address"
+          placeholder="Email Address"
           value={form.email}
           onChange={handleChange}
           required
-          className="auth-input"
+          icon={Mail}
         />
 
-        <input
+        <Input
           type="password"
           name="password"
           placeholder="Password"
           value={form.password}
           onChange={handleChange}
           required
-          className="auth-input"
+          icon={Lock}
         />
 
-        <button
+        <Button
           type="submit"
+          variant="primary"
+          className="w-full text-base py-3.5 mt-2"
           disabled={loading}
-          className="w-full mt-2 rounded-lg bg-indigo-600 py-3 text-white font-semibold
-                     hover:bg-indigo-700 transition disabled:opacity-50"
+          icon={ArrowRight}
         >
-          {loading ? "Creating account..." : "Create account"}
-        </button>
+          {loading ? "Creating account..." : "Create Account"}
+        </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-slate-400">
+      <p className="mt-8 text-center text-sm text-slate-400">
         Already have an account?{" "}
-        <Link to="/login" className="text-indigo-400 hover:text-indigo-300">
+        <Link to="/login" className="text-indigo-400 font-medium hover:text-indigo-300 hover:underline transition-all">
           Sign in
         </Link>
       </p>

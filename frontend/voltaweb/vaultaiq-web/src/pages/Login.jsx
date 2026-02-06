@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import AuthLayout from "../layout/AuthLayout";
+import { Input } from "../components/ui/Input";
+import { Button } from "../components/ui/Button";
+import { Mail, Lock, LogIn } from "lucide-react";
 
 export default function Login() {
   const { login } = useAuth();
@@ -29,45 +32,49 @@ export default function Login() {
 
   return (
     <AuthLayout
-      title="Sign in to VaultaIQ"
-      subtitle="Smart expense tracking, secured by AI"
+      title="Welcome Back"
+      subtitle="Sign in to continue your financial journey"
     >
       {error && (
-        <p className="mb-4 text-sm text-red-400 text-center">{error}</p>
+        <div className="mb-6 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-sm text-red-400 text-center">
+          {error}
+        </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <Input
           type="email"
           placeholder="Email address"
-          className="w-full rounded-lg bg-slate-800/70 px-4 py-3 text-white placeholder-slate-500 border border-white/10 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          icon={Mail}
         />
 
-        <input
+        <Input
           type="password"
           placeholder="Password"
-          className="w-full rounded-lg bg-slate-800/70 px-4 py-3 text-white placeholder-slate-500 border border-white/10 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          icon={Lock}
         />
 
-        <button
+        <Button
           type="submit"
+          variant="primary"
+          className="w-full text-base py-3.5"
           disabled={loading}
-          className="w-full rounded-lg bg-indigo-600 py-3 text-white font-semibold hover:bg-indigo-700 transition disabled:opacity-50"
+          icon={LogIn}
         >
-          {loading ? "Signing in..." : "Sign in"}
-        </button>
+          {loading ? "Signing in..." : "Sign In"}
+        </Button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-slate-400">
+      <p className="mt-8 text-center text-sm text-slate-400">
         Don&apos;t have an account?{" "}
-        <Link to="/register" className="text-indigo-400 hover:text-indigo-300">
-          Create one
+        <Link to="/register" className="text-indigo-400 font-medium hover:text-indigo-300 hover:underline transition-all">
+          Create one now
         </Link>
       </p>
     </AuthLayout>

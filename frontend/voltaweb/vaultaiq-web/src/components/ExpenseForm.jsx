@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { EXPENSE_CATEGORIES } from "../constants/expenseCategories";
+import { Input } from "./ui/Input";
+import { Button } from "./ui/Button";
+import { Card } from "./ui/Card";
+import { Plus, IndianRupee, Tag, Store, FileText, Calendar } from "lucide-react";
 
 export default function ExpenseForm({ onAdd }) {
   const [form, setForm] = useState({
@@ -12,16 +16,12 @@ export default function ExpenseForm({ onAdd }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-
-    // Prevent negative values
     if (name === "amount" && Number(value) < 0) return;
-
     setForm({ ...form, [name]: value });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (Number(form.amount) <= 0) {
       alert("Amount must be greater than 0");
       return;
@@ -42,101 +42,79 @@ export default function ExpenseForm({ onAdd }) {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="
-        bg-slate-800 p-6 rounded-xl mb-8
-        w-full max-w-xl
-        mx-auto
-      "
-    >
-      <h3 className="text-sm font-semibold text-slate-300 mb-6">
+    <Card className="max-w-xl mx-auto mb-8 bg-gradient-to-br from-slate-900 to-slate-900/50">
+      <h3 className="text-lg font-heading font-medium text-white mb-6 flex items-center gap-2">
+        <Plus className="w-5 h-5 text-indigo-400" />
         Add New Expense
       </h3>
 
-      <div className="flex flex-col gap-4">
-        {/* Amount */}
-        <div>
-          <label className="block text-xs text-slate-400 mb-1">Amount</label>
-          <input
-            name="amount"
-            type="number"
-            min="0"
-            step="0.01"
-            placeholder="Enter amount"
-            value={form.amount}
-            onChange={handleChange}
-            required
-            className="input w-full"
-          />
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <Input
+          label="Amount"
+          name="amount"
+          type="number"
+          min="0"
+          step="0.01"
+          placeholder="0.00"
+          value={form.amount}
+          onChange={handleChange}
+          required
+          icon={IndianRupee}
+        />
+
+        <div className="space-y-2">
+          <label className="text-xs font-medium text-slate-400 uppercase tracking-wider ml-1">Category</label>
+          <div className="relative">
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500">
+              <Tag className="w-5 h-5" />
+            </div>
+            <select
+              name="category"
+              value={form.category}
+              onChange={handleChange}
+              className="w-full bg-slate-900/50 text-white border border-slate-700/50 rounded-xl pl-11 pr-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 transition-all hover:bg-slate-900/80"
+            >
+              {EXPENSE_CATEGORIES.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
-        {/* Category */}
-        <div>
-          <label className="block text-xs text-slate-400 mb-1">Category</label>
-          <select
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-            className="input w-full"
-          >
-            {EXPENSE_CATEGORIES.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-        </div>
+        <Input
+          label="Merchant"
+          name="merchant"
+          placeholder="e.g. Starbucks, Uber"
+          value={form.merchant}
+          onChange={handleChange}
+          icon={Store}
+        />
 
-        {/* Merchant */}
-        <div>
-          <label className="block text-xs text-slate-400 mb-1">Merchant</label>
-          <input
-            name="merchant"
-            placeholder="e.g. Swiggy, Amazon"
-            value={form.merchant}
-            onChange={handleChange}
-            className="input w-full"
-          />
-        </div>
+        <Input
+          label="Note"
+          name="note"
+          placeholder="Optional details"
+          value={form.note}
+          onChange={handleChange}
+          icon={FileText}
+        />
 
-        {/* Note */}
-        <div>
-          <label className="block text-xs text-slate-400 mb-1">Note</label>
-          <input
-            name="note"
-            placeholder="Optional note"
-            value={form.note}
-            onChange={handleChange}
-            className="input w-full"
-          />
-        </div>
+        <Input
+          label="Date"
+          name="date"
+          type="date"
+          value={form.date}
+          onChange={handleChange}
+          required
+          icon={Calendar}
+        />
 
-        {/* Date */}
-        <div>
-          <label className="block text-xs text-slate-400 mb-1">Date</label>
-          <input
-            name="date"
-            type="date"
-            value={form.date}
-            onChange={handleChange}
-            required
-            className="input w-full"
-          />
-        </div>
-
-        {/* Submit */}
-        <button
-          type="submit"
-          className="
-            mt-2 w-full py-2 rounded-md
-            bg-indigo-600 hover:bg-indigo-700
-            font-semibold transition
-          "
-        >
+        <Button type="submit" variant="primary" className="w-full mt-4" icon={Plus}>
           Add Expense
-        </button>
-      </div>
-    </form>
+        </Button>
+      </form>
+    </Card>
   );
 }
